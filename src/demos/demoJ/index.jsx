@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { Suspense, use } from 'react';
 import './index.less';
 
 let cache = new Map();
@@ -21,15 +21,7 @@ function fetchUserData() {
 }
 
 function UserData() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    fetchUserData().then(setData);
-  }, []);
-
-  if (!data) {
-    return <div className="demo-j-loading">⏳ 加载中...</div>;
-  }
+  const data = use(fetchUserData());
 
   return (
     <div className="demo-j-data">
@@ -40,11 +32,9 @@ function UserData() {
 }
 
 function DemoJ() {
-  const [key, setKey] = useState(0);
-
   const handleRefresh = () => {
     cache.clear();
-    setKey(prev => prev + 1);
+    window.location.reload();
   };
 
   return (
@@ -58,7 +48,7 @@ function DemoJ() {
         <h3>✨ 实际效果演示</h3>
         <div className="demo-j-display">
           <Suspense fallback={<div className="demo-j-loading">⏳ 加载中...</div>}>
-            <UserData key={key} />
+            <UserData />
           </Suspense>
           <button onClick={handleRefresh}>重新加载</button>
         </div>
@@ -70,20 +60,26 @@ function DemoJ() {
       <div className="demo-j-code-section">
         <h3>React 19 use Hook 代码</h3>
         <div className="demo-j-code">
-          <pre>{`// 直接使用 Promise，无需状态管理
-function Component() {
-  const data = use(fetchData());
-  return <div>{data}</div>;
+          <pre>{`// React 19 use Hook - 直接使用 Promise
+function UserData() {
+  const data = use(fetchUserData());
+
+  return (
+    <div>
+      <p>用户: {data.user}</p>
+      <p>邮箱: {data.email}</p>
+    </div>
+  );
 }
 
 // 配合 Suspense 使用
-<Suspense fallback={<Loading />}>
-  <Component />
+<Suspense fallback={<div>⏳ 加载中...</div>}>
+  <UserData />
 </Suspense>
 
-// ✅ 代码减少 80%
-// ✅ 自动处理加载状态
-// ✅ 声明式，更清晰`}</pre>
+// ✅ 无需 useState/useEffect
+// ✅ 无需手动判断 loading
+// ✅ 代码减少 80%`}</pre>
         </div>
       </div>
 
