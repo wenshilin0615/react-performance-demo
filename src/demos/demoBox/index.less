@@ -1,0 +1,154 @@
+.control-panel {
+  padding: 20px;
+  display: flex;
+  gap: 10px;
+
+  button {
+    padding: 8px 16px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+
+    &:hover {
+      background: #f5f5f5;
+    }
+  }
+}
+
+.demo-box-container {
+  padding: 20px;
+
+  .box-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .box {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .box-section {
+    display: flex;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    > div {
+      flex: 1;
+      padding: 8px;
+      text-align: center;
+    }
+  }
+
+  .box-header {
+    background: #e3f2fd;
+    font-weight: bold;
+  }
+
+  .box-middle-wrapper {
+    border-bottom: 1px solid #eee;
+  }
+
+  .box-middle-top {
+    background: #f5f5f5;
+  }
+
+  .box-middle-bottom {
+    background: #fff9c4;
+  }
+
+  .box-footer {
+    background: #fff3e0;
+  }
+
+  .section-left {
+    border-right: 1px solid #ddd;
+  }
+
+  .section-center {
+    border-right: 1px solid #ddd;
+  }
+
+  .box-absolute {
+    position: relative;
+  }
+
+  .price-overlay {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    padding: 10px;
+    pointer-events: none;
+
+    .price-left,
+    .price-right {
+      flex: 1;
+      padding: 8px;
+      text-align: center;
+      background: #fff9c4;
+      pointer-events: auto;
+    }
+
+    .price-left {
+      margin-right: auto;
+      max-width: 33.33%;
+    }
+
+    .price-right {
+      margin-left: auto;
+      max-width: 33.33%;
+    }
+  }
+
+  .level-list {
+    padding: 10px;
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+  }
+
+  .level-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 12px;
+  }
+
+  .level-qty {
+    flex: 1;
+    color: #666;
+  }
+
+  .level-bid {
+    flex: 1;
+    text-align: center;
+    color: #f44336;
+  }
+
+  .level-ask {
+    flex: 1;
+    text-align: right;
+    color: #4caf50;
+  }
+
+  .level-absolute {
+    position: absolute;
+    bottom: 60px;
+    left: 10px;
+    right: 10px;
+    background: rgba(250, 250, 250, 0.95);
+    border-radius: 4px;
+    border-bottom: none;
+  }
+}

@@ -4,7 +4,7 @@
  * @FilePath: \react16_project\src\App.jsx
  */
 import React from 'react'
-import DemoA from './demos/demoA'
+// import DemoA from './demos/demoA'
 // import DemoB from './demos/demoB'
 // import DemoC from './demos/demoC'
 // import DemoD from './demos/demoD'
@@ -13,14 +13,15 @@ import DemoA from './demos/demoA'
 // import DemoG from './demos/demoG'
 // import DemoH from './demos/demoH'
 // import DemoI from './demos/demoI'
-import DemoJ from './demos/demoJ'
+// import DemoJ from './demos/demoJ'
+import DemoBox from './demos/demoBox'
 import './App.css'
 
 function App() {
   return (
     <>
       {/* Render 瓶颈定位与优化 */}
-      <DemoA />
+      {/* <DemoA /> */}
       {/* Code Splitting 与懒加载 */}
       {/* <DemoB /> */}
       {/* 计算密集型任务优化 */}
@@ -39,6 +40,8 @@ function App() {
       {/* <DemoI /> */}
       {/* 手动管理异步状态 */}
       {/* <DemoJ /> */}
+      {/* 盒子布局展示 */}
+      <DemoBox updateInterval={200} />
     </>
   )
 }
