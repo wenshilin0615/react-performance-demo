@@ -1,4 +1,4 @@
-import React, { useState, useRef, Profiler } from 'react';
+import React, { useState, useRef, Profiler, useEffect, use } from 'react';
 import './index.less';
 
 // Profiler 回调函数
@@ -52,6 +52,10 @@ function DemoD() {
     setFlag(f => !f);
     setData([7, 8, 9]);
   };
+
+  useEffect(() => {
+    console.log('重新渲染', count, flag, data);
+  }, [count, flag, data]);
 
   return (
     <Profiler id="DemoD" onRender={onRenderCallback}>

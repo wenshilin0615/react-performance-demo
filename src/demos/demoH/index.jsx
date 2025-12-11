@@ -1,15 +1,20 @@
-import React, { useState, memo } from 'react';
+/*
+ * @Author: 温石林
+ * @Description: 
+ * @FilePath: \react19_project\src\demos\demoH\index.jsx
+ */
+import React, { useState, useEffect } from 'react';
 import './index.less';
 
-const ExpensiveChild = memo(({ value, onClick }) => {
+const ExpensiveChild = ({ value, onClick }) => {
   console.log('[ExpensiveChild] 渲染');
   return (
     <div className="demo-h-child">
-      <p>子组件值: {value}</p>
+      <p>子组件值【count * 2计算结果】: {value}</p>
       <button onClick={onClick}>点击</button>
     </div>
   );
-});
+};
 
 function CompilerVersion() {
   const [count, setCount] = useState(0);
@@ -18,12 +23,23 @@ function CompilerVersion() {
   // ✨ Compiler 自动优化，无需手动 memo
   const expensiveValue = count * 2;
   const handleClick = () => console.log('点击');
+  const clickBtn = () => {
+    setCount(count + 1);
+  };
+
+  useEffect(() => {
+    console.log('count变化', count);
+  }, [count])
+
+  useEffect(() => {
+    console.log('text变化', text);
+  }, [text])
 
   return (
     <div className="demo-h-version demo-h-compiler">
       <h3>✨ React 19 Compiler 版本</h3>
       <div className="demo-h-controls">
-        <button onClick={() => setCount(count + 1)}>
+        <button onClick={clickBtn}>
           增加计数: {count}
         </button>
         <input 
@@ -45,7 +61,7 @@ function DemoH() {
     <div className="demo-h">
       <h2>Demo H - React 19 Compiler 自动优化</h2>
       <p className="demo-h-intro">
-        React 19 Compiler 可以自动优化代码，无需手动添加 memo/useMemo/useCallback
+        React 19 Compiler 可以自动优化代码，无需手动添加memo/useMemo/useCallback,需要安装插件npm install babel-plugin-react-compiler --save-dev,并在vite.config.js里配置<span style={{ color: 'rgba(243, 111, 232, 1)'}}>'babel-plugin-react-compiler'</span>
       </p>
 
       <CompilerVersion />

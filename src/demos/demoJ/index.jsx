@@ -1,27 +1,28 @@
 import React, { Suspense, use } from 'react';
 import './index.less';
 
-let cache = new Map();
-
+let promiseCache = null;
+// 每次组件渲染时， fetchUserData() 都会创建一个 新的 Promise ，导致 use Hook 一直处于 pending 状态，Suspense 持续显示 loading。
+// 因此需要使用 promiseCache 缓存 Promise
 function fetchUserData() {
-  const cacheKey = 'userData';
-  
-  if (cache.has(cacheKey)) {
-    return cache.get(cacheKey);
+  if (!promiseCache) {
+    promiseCache = new Promise(resolve => {
+      setTimeout(() => {
+        resolve({ user: '李四', email: 'lisi@example.com' });
+      }, 1500);
+    });
   }
-
-  const promise = new Promise(resolve => {
-    setTimeout(() => {
-      resolve({ user: '李四', email: 'lisi@example.com' });
-    }, 1500);
-  });
-
-  cache.set(cacheKey, promise);
-  return promise;
+  return promiseCache;
 }
 
-function UserData() {
-  const data = use(fetchUserData());
+function UserData(props) {
+  const { permission = false } = props;
+// use Hook 与传统 Hook 的最大区别：
+// ✅ 可以在条件语句中使用
+// ✅ 可以在循环中使用
+// ✅ 可以在 try-catch 中使用
+// ✅ 不受 Hook 规则限制
+  const data = permission ? use(fetchUserData()) : { user: '未知', email: 'unknown@example.com'};
 
   return (
     <div className="demo-j-data">
@@ -32,9 +33,11 @@ function UserData() {
 }
 
 function DemoJ() {
+  const [refreshKey, setRefreshKey] = React.useState(0);
+
   const handleRefresh = () => {
-    cache.clear();
-    window.location.reload();
+    promiseCache = null;
+    setRefreshKey(prev => prev + 1);
   };
 
   return (
@@ -47,8 +50,11 @@ function DemoJ() {
       <div className="demo-j-live">
         <h3>✨ 实际效果演示</h3>
         <div className="demo-j-display">
-          <Suspense fallback={<div className="demo-j-loading">⏳ 加载中...</div>}>
-            <UserData />
+          <Suspense fallback={<div className="demo-j-loading">⏳ 1加载中...</div>}>
+            <UserData key={refreshKey} permission/>
+          </Suspense>
+          <Suspense fallback={<div className="demo-j-loading">⏳ 2加载中...</div>}>
+            <UserData key={refreshKey} permission={false}/>
           </Suspense>
           <button onClick={handleRefresh}>重新加载</button>
         </div>
