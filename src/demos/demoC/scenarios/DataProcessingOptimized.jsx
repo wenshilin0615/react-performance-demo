@@ -1,22 +1,26 @@
+/*
+ * @Author: 温石林
+ * @Description: 
+ * @FilePath: \react16_project\src\demos\demoC\scenarios\DataProcessingOptimized.jsx
+ */
 import React, { useState, useRef, useEffect } from 'react';
 
 // 场景1：大数据处理 - 优化版本（Web Worker）
 function DataProcessingOptimized() {
-  const [dataSize, setDataSize] = useState(100000);
+  const [dataSize, setDataSize] = useState(500000);
   const [result, setResult] = useState(null);
-  const [processing, setProcessing] = useState(false);
-  const [duration, setDuration] = useState(0);
+  const [status, setStatus] = useState({ processing: false, duration: 0 });
   const workerRef = useRef(null);
 
   useEffect(() => {
     // 创建 Worker
-    workerRef.current = new Worker('/workers/dataWorker.js');
+    workerRef.current = new Worker(new URL('../workers/dataWorker.js', import.meta.url), { type: 'module' });
     
     workerRef.current.onmessage = (e) => {
+      console.log('Received result from worker:', e);
       const endTime = performance.now();
-      setDuration(endTime - workerRef.current.startTime);
+      setStatus({ processing: false, duration: endTime - workerRef.current.startTime });
       setResult(e.data);
-      setProcessing(false);
     };
 
     return () => {
@@ -25,9 +29,10 @@ function DataProcessingOptimized() {
   }, []);
 
   const processData = () => {
-    setProcessing(true);
+    setStatus({ processing: true, duration: 0 });
     setResult(null);
     workerRef.current.startTime = performance.now();
+    console.log('Posting message to worker with dataSize:', dataSize);
     workerRef.current.postMessage({ dataSize });
   };
 
@@ -48,8 +53,8 @@ function DataProcessingOptimized() {
             step="10000"
           />
         </label>
-        <button onClick={processData} disabled={processing}>
-          {processing ? '处理中...' : '开始处理'}
+        <button onClick={processData} disabled={status.processing}>
+          {status.processing ? '处理中...' : '开始处理'}
         </button>
       </div>
 
@@ -62,20 +67,20 @@ function DataProcessingOptimized() {
         </div>
       )}
 
-      {duration > 0 && (
+      {status.duration > 0 && (
         <div className="demo-c-scenario-performance">
-          ⏱️ 处理耗时：{duration.toFixed(2)} ms
-          <span style={{ color: '#4caf50', marginLeft: '10px' }}>
+          ⏱️ 处理耗时：{status.duration.toFixed(2)} ms
+          <span className="success-text">
             ✅ 使用 Web Worker，主线程未阻塞
           </span>
         </div>
       )}
 
-      <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#e8f5e9', borderRadius: '4px' }}>
+      <div className="demo-c-scenario-tip">
         <strong>优化效果：</strong>处理过程中可以自由操作界面，无卡顿感
       </div>
     </div>
   );
 }
 
-export default DataProcessingOptimized;
+export default React.memo(DataProcessingOptimized);

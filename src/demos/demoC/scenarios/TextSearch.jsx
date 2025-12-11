@@ -1,19 +1,11 @@
 import React, { useState } from 'react';
+import { generateSearchData, searchData } from '../utils';
 
 // 场景3：文本搜索 - 未优化版本
 function TextSearchUnoptimized() {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const [duration, setDuration] = useState(0);
-
-  // 生成大量文本数据
-  const generateData = () => {
-    return Array.from({ length: 200000 }, (_, i) => ({
-      id: i,
-      title: `文章标题 ${i} - ${Math.random().toString(36).substring(7)}`,
-      content: `这是第 ${i} 篇文章的内容，包含一些随机文本 ${Math.random().toString(36).substring(2, 15)}`
-    }));
-  };
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -26,14 +18,8 @@ function TextSearchUnoptimized() {
 
     const startTime = performance.now();
     
-    // 每次都重新生成数据（模拟实际场景）
-    const data = generateData();
-
-    // 模糊搜索（耗时操作）
-    const filtered = data.filter(item => 
-      item.title.toLowerCase().includes(term.toLowerCase()) ||
-      item.content.toLowerCase().includes(term.toLowerCase())
-    );
+    const data = generateSearchData();
+    const filtered = searchData(data, term);
 
     const endTime = performance.now();
     setDuration(endTime - startTime);
@@ -75,4 +61,4 @@ function TextSearchUnoptimized() {
   );
 }
 
-export default TextSearchUnoptimized;
+export default React.memo(TextSearchUnoptimized);

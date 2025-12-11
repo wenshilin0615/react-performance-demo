@@ -8,7 +8,8 @@ import './index.less';
 
 // 生成大量数据
 const generateData = () => {
-  return Array.from({ length: 2000000 }, (_, i) => ({
+  console.log('生成大量数据...');
+  return Array.from({ length: 3000000 }, (_, i) => ({
     id: i,
     name: `项目 ${i}`,
     description: `这是第 ${i} 个项目的描述信息`
@@ -23,24 +24,24 @@ function onRenderCallback(id, phase, actualDuration) {
 // React 16 - 无并发渲染
 function DemoE() {
   const [query, setQuery] = useState('');
-  const [inputValue, setInputValue] = useState('');
+  // const [inputValue, setInputValue] = useState('');
   const data = useMemo(() => generateData(), []);
 
   // 过滤数据（耗时操作）
   const filteredResults = useMemo(() => {
     if (!query) return [];
-    const startTime = performance.now();
+    // const startTime = performance.now();
     const results = data.filter(item =>
       item.name.includes(query) || item.description.includes(query)
     );
-    const duration = performance.now() - startTime;
-    console.log(`过滤耗时: ${duration.toFixed(2)}ms`);
+    // const duration = performance.now() - startTime;
+    // console.log(`过滤耗时: ${duration.toFixed(2)}ms`);
     return results.slice(0, 100);
   }, [query, data]);
 
   const handleChange = (e) => {
     const value = e.target.value;
-    setInputValue(value);
+    // setInputValue(value);
     // React 16: 直接更新，会阻塞输入
     setQuery(value);
   };
@@ -54,7 +55,7 @@ function DemoE() {
         <div className="demo-e-search">
           <input
             type="text"
-            value={inputValue}
+            value={query}
             onChange={handleChange}
             placeholder="输入搜索关键词（尝试快速输入）..."
           />

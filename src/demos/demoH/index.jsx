@@ -1,26 +1,35 @@
-import React, { useState, useMemo, useCallback, memo } from 'react';
+import React, { useState, useMemo, useCallback, memo, useEffect } from 'react';
 import './index.less';
 
-const ExpensiveChild = memo(({ value, onClick }) => {
+const ExpensiveChild = ({ value, onClick }) => {
   console.log('[ExpensiveChild] 渲染');
   return (
     <div className="demo-h-child">
-      <p>子组件值: {value}</p>
+      <p>子组件值【count * 2计算结果】: {value}</p>
       <button onClick={onClick}>点击</button>
     </div>
   );
-});
+};
+
+const ExpensiveChildMemo = memo(ExpensiveChild);
 
 function UnoptimizedVersion() {
   const [count, setCount] = useState(0);
   const [text, setText] = useState('');
 
   const expensiveValue = count * 2;
-  console.log('计算 expensiveValue', expensiveValue);
   const handleClick = () => console.log('点击');
   const clickBtn = () => {
     setCount(count + 1);
   };
+
+  useEffect(() => {
+    console.log('count变化', count);
+  }, [count])
+
+  useEffect(() => {
+    console.log('text变化', text);
+  }, [text])
 
   return (
     <div className="demo-h-version demo-h-unoptimized">
@@ -56,9 +65,17 @@ function OptimizedVersion() {
     console.log('[useCallback] 点击');
   }, []);
 
+  useEffect(() => {
+    console.log('count变化', count);
+  }, [count])
+
+  useEffect(() => {
+    console.log('text变化', text);
+  }, [text])
+
   return (
     <div className="demo-h-version demo-h-optimized">
-      <h3>✅ 优化版本</h3>
+      <h3>✅ 手动优化版本</h3>
       <div className="demo-h-controls">
         <button onClick={() => setCount(count + 1)}>
           增加计数: {count}
@@ -69,7 +86,7 @@ function OptimizedVersion() {
           placeholder="输入文本试试"
         />
       </div>
-      <ExpensiveChild value={expensiveValue} onClick={handleClick} />
+      <ExpensiveChildMemo value={expensiveValue} onClick={handleClick} />
       <div className="demo-h-note">
         ✅ 输入文本时子组件不会重渲染（查看控制台）
       </div>

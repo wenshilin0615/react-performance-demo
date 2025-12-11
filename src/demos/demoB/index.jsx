@@ -14,7 +14,7 @@ function Loading() {
 }
 
 function DemoB() {
-  const [showOptimized, setShowOptimized] = useState(true);
+  const [showOptimized, setShowOptimized] = useState(false);
   
   const onRenderCallback = (id, phase, actualDuration) => {
     console.log(`[Profiler] ${id} - ${phase} 阶段耗时: ${actualDuration.toFixed(2)}ms`);

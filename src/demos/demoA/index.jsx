@@ -11,7 +11,16 @@ import './index.less';
 function DemoA() {
   const [showOptimized, setShowOptimized] = useState(false);
   
-  const onRenderCallback = (id, phase, actualDuration) => {
+
+  const onRenderCallback = (
+    id, // Profiler 树的 "id"
+    phase, // "mount"（挂载） 或 "update"（更新）
+    actualDuration, // 本次更新 committed 花费的渲染时间
+    baseDuration, // 估计不使用 memoization 的情况下渲染整颗子树需要的时间
+    startTime, // 本次更新中 React 开始渲染的时间
+    commitTime, // 本次更新中 React committed 的时间
+    interactions // 属于本次更新的 interactions 的集合
+  ) => {
     console.log(`[Profiler] ${id} - ${phase} 阶段耗时: ${actualDuration.toFixed(2)}ms`);
   };
   

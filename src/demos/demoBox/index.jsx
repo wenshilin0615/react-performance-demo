@@ -4,8 +4,8 @@
  * @FilePath: \react16_project\src\demos\demoBox\index.jsx
  */
 import React, { useState, useEffect, useCallback, memo } from 'react'
-import DemoBox1 from './DemoBox1'
-import DemoBox2 from './DemoBox2'
+// import DemoBox1 from './DemoBox1'
+// import DemoBox2 from './DemoBox2'
 import DemoBox3 from './DemoBox3'
 import { generateRandomPrice, formatQty } from './utils'
 import './index.less'
@@ -15,7 +15,7 @@ import './index.less'
 const MemoBox3 = memo(DemoBox3)
 
 const DemoBox = ({ updateInterval = 1000 }) => {
-  const [boxData, setBoxData] = useState(
+  const [boxData, setBoxData] = useState(() =>
     Array.from({ length: 20 }, () => ({
       boxId: Math.random().toString(36).substr(2, 9),
       ask: generateRandomPrice(),

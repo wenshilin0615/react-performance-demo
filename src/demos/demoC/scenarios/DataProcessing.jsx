@@ -1,34 +1,22 @@
 import React, { useState } from 'react';
+import { processData as processDataUtil } from '../utils';
 
 // 场景1：大数据处理 - 未优化版本（主线程阻塞）
 function DataProcessingUnoptimized() {
-  const [dataSize, setDataSize] = useState(100000);
+  const [dataSize, setDataSize] = useState(500000);
   const [result, setResult] = useState(null);
-  const [processing, setProcessing] = useState(false);
-  const [duration, setDuration] = useState(0);
+  const [status, setStatus] = useState({ processing: false, duration: 0 });
 
   const processData = () => {
-    setProcessing(true);
+    setStatus({ processing: true, duration: 0 });
     setResult(null);
     const startTime = performance.now();
 
-    const data = Array.from({ length: dataSize }, (_, i) => ({
-      id: i,
-      value: Math.random() * 1000,
-      category: ['A', 'B', 'C', 'D'][Math.floor(Math.random() * 4)]
-    }));
-
-    data.sort((a, b) => b.value - a.value);
-    const filtered = data.filter(item => item.value > 500);
-    const stats = filtered.reduce((acc, item) => {
-      acc[item.category] = (acc[item.category] || 0) + 1;
-      return acc;
-    }, {});
+    const result = processDataUtil(dataSize);
 
     const endTime = performance.now();
-    setDuration(endTime - startTime);
-    setResult({ total: data.length, filtered: filtered.length, stats });
-    setProcessing(false);
+    setStatus({ processing: false, duration: endTime - startTime });
+    setResult(result);
   };
 
   return (
@@ -48,8 +36,8 @@ function DataProcessingUnoptimized() {
             step="10000"
           />
         </label>
-        <button onClick={processData} disabled={processing}>
-          {processing ? '处理中...' : '开始处理'}
+        <button onClick={processData} disabled={status.processing}>
+          {status.processing ? '处理中...' : '开始处理'}
         </button>
       </div>
 
@@ -62,10 +50,10 @@ function DataProcessingUnoptimized() {
         </div>
       )}
 
-      {duration > 0 && (
+      {status.duration > 0 && (
         <div className="demo-c-scenario-performance">
-          ⏱️ 处理耗时：{duration.toFixed(2)} ms
-          {duration > 100 && <span style={{ color: '#d32f2f', marginLeft: '10px' }}>
+          ⏱️ 处理耗时：{status.duration.toFixed(2)} ms
+          {status.duration > 100 && <span style={{ color: '#d32f2f', marginLeft: '10px' }}>
             ⚠️ 主线程阻塞超过 100ms
           </span>}
         </div>
@@ -74,4 +62,4 @@ function DataProcessingUnoptimized() {
   );
 }
 
-export default DataProcessingUnoptimized;
+export default React.memo(DataProcessingUnoptimized);

@@ -1,3 +1,8 @@
+/*
+ * @Author: 温石林
+ * @Description: 
+ * @FilePath: \react16_project\src\demos\demoC\scenarios\TextSearchOptimized.jsx
+ */
 import React, { useState, useRef, useEffect } from 'react';
 
 // 场景3：文本搜索 - 优化版本（Web Worker）
@@ -10,9 +15,10 @@ function TextSearchOptimized() {
 
   useEffect(() => {
     // 创建 Worker
-    workerRef.current = new Worker('/workers/searchWorker.js');
+    workerRef.current = new Worker(new URL('../workers/searchWorker.js', import.meta.url), { type: 'module' });
     
     workerRef.current.onmessage = (e) => {
+      console.log('Received result from worker:', e);
       const endTime = performance.now();
       setDuration(endTime - workerRef.current.startTime);
       setResults(e.data.results);
@@ -36,6 +42,7 @@ function TextSearchOptimized() {
 
     setSearching(true);
     workerRef.current.startTime = performance.now();
+    console.log('Posting message to worker with searchTerm:', term);
     workerRef.current.postMessage({ searchTerm: term });
   };
 
@@ -50,7 +57,7 @@ function TextSearchOptimized() {
           placeholder="输入搜索关键词..."
           value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
-          style={{ width: '300px' }}
+          className="search-input"
         />
       </div>
 
@@ -63,7 +70,7 @@ function TextSearchOptimized() {
       {duration > 0 && !searching && (
         <div className="demo-c-scenario-performance">
           ⏱️ 搜索耗时：{duration.toFixed(2)} ms - 找到 {results.length} 条结果
-          <span style={{ color: '#4caf50', marginLeft: '10px' }}>
+          <span className="success-text">
             ✅ 使用 Web Worker，主线程未阻塞
           </span>
         </div>
@@ -71,20 +78,20 @@ function TextSearchOptimized() {
 
       <div className="demo-c-scenario-result">
         {results.map(item => (
-          <div key={item.id} style={{ padding: '10px', borderBottom: '1px solid #eee' }}>
+          <div key={item.id} className="search-result-item">
             <strong>{item.title}</strong>
-            <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#666' }}>
+            <p className="search-result-content">
               {item.content}
             </p>
           </div>
         ))}
       </div>
 
-      <div style={{ marginTop: '15px', padding: '10px', backgroundColor: '#e8f5e9', borderRadius: '4px' }}>
+      <div className="demo-c-scenario-tip">
         <strong>优化效果：</strong>搜索过程中可以自由操作界面，无卡顿感
       </div>
     </div>
   );
 }
 
-export default TextSearchOptimized;
+export default React.memo(TextSearchOptimized);
